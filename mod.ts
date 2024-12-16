@@ -57,6 +57,7 @@
 
 export {
   type ChainAddress,
+  type TokenListMetadata,
   type TokenMetadata,
   TokenMetadataStore,
 } from "./tokens.ts";

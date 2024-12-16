@@ -42,6 +42,11 @@ const tokenInfoSchema = v.object({
 export const tokenListSchema = v.object({
   name: v.string(),
   timestamp: v.pipe(v.string(), v.isoTimestamp()),
+  version: v.object({
+    major: v.pipe(v.number(), v.minValue(0), v.safeInteger()),
+    minor: v.pipe(v.number(), v.minValue(0), v.safeInteger()),
+    patch: v.pipe(v.number(), v.minValue(0), v.safeInteger()),
+  }),
   /** The list of tokens */
   tokens: v.pipe(v.array(tokenInfoSchema), v.minLength(1), v.maxLength(10_000)),
 });

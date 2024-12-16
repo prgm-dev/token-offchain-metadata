@@ -18,6 +18,33 @@ export interface ChainAddress<
 }
 
 /**
+ * Metadata that describes a token list.
+ */
+export interface TokenListMetadata {
+  /**
+   * The name of the token list
+   * @example "Uniswap Labs Default"
+   */
+  name: string;
+  /**
+   * The timestamp of this list version; i.e. when this immutable version of the list was created
+   * @example "2024-12-12T18:01:30.180Z"
+   */
+  timestamp: string;
+  /** The href of the URL to this token list */
+  href: string;
+  /** The version of the list, used in change detection */
+  version: {
+    /** The major version of the list. Must be incremented when tokens are removed from the list or token addresses are changed. */
+    major: number;
+    /** The minor version of the list. Must be incremented when tokens are added to the list. */
+    minor: number;
+    /** The patch version of the list. Must be incremented for any changes to the list. */
+    patch: number;
+  };
+}
+
+/**
  * Metadata for a token.
  */
 export interface TokenMetadata {
@@ -32,6 +59,9 @@ export interface TokenMetadata {
  * Stores token metadata and provides methods for fetching and retrieving it.
  */
 export class TokenMetadataStore {
+  /** Map of href to token lists that were loaded. */
+  #tokenLists = new Map<string, TokenListMetadata>();
+  /** Map of address to token metadata. */
   #tokensByAddress = new Map<Address, TokenMetadata>();
 
   /**
@@ -89,6 +119,14 @@ export class TokenMetadataStore {
         }
       }
     }
+
+    // On success, store the token list
+    this.#tokenLists.set(tokenListUrl.href, {
+      name: parseResult.output.name,
+      timestamp: parseResult.output.timestamp,
+      version: parseResult.output.version,
+      href: tokenListUrl.href,
+    });
   }
 
   /**
@@ -131,5 +169,22 @@ export class TokenMetadataStore {
     return this.#tokensByAddress.get(
       getAddress(chainAddress.address, chainAddress.chainId),
     ) ?? null;
+  }
+
+  /**
+   * An array of metadata of token lists that were loaded.
+   */
+  get tokenLists(): Array<TokenListMetadata> {
+    return Array.from(this.#tokenLists.values());
+  }
+
+  /**
+   * From a given URL or href, return the token list metadata if it was loaded.
+   */
+  getTokenListMetadata(tokenListUrl: URL | string): TokenListMetadata | null {
+    if (typeof tokenListUrl === "string") {
+      tokenListUrl = new URL(tokenListUrl);
+    }
+    return this.#tokenLists.get(tokenListUrl.href) ?? null;
   }
 }

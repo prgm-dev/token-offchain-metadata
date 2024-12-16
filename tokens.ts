@@ -1,21 +1,11 @@
 import { safeParse } from "@valibot/valibot";
-import type { Address } from "@wevm/viem";
-import { getAddress } from "@wevm/viem/utils";
-import { isHttpsUrl } from "./url.ts";
+import {
+  type ChainAddress,
+  type ChainAddressKey,
+  getChainAddressKey,
+} from "./chain-address.ts";
 import { tokenListSchema } from "./token-list-validation.ts";
-
-/**
- * An address on a specific chain.
- */
-export interface ChainAddress<
-  C extends number = number,
-  A extends Address = Address,
-> {
-  /** The chain ID of the address */
-  chainId: C;
-  /** The address on the specified chain */
-  address: A;
-}
+import { isHttpsUrl } from "./url.ts";
 
 /**
  * Metadata that describes a token list.
@@ -62,7 +52,7 @@ export class TokenMetadataStore {
   /** Map of href to token lists that were loaded. */
   #tokenLists = new Map<string, TokenListMetadata>();
   /** Map of address to token metadata. */
-  #tokensByAddress = new Map<Address, TokenMetadata>();
+  #tokensByAddress = new Map<ChainAddressKey, TokenMetadata>();
 
   /**
    * Fetch, parse, and store the contents of a [token list](https://tokenlists.org/).
@@ -93,7 +83,7 @@ export class TokenMetadataStore {
     for (const token of parseResult.output.tokens) {
       if (token.logoURI && isHttpsUrl(token.logoURI)) {
         const tokenMetadata = this.addTokenLogoImageSources(
-          { chainId: token.chainId, address: token.address },
+          token,
           token.logoURI,
         );
 
@@ -106,9 +96,12 @@ export class TokenMetadataStore {
             const chainId = Number(chainIdString);
 
             // Link the token to the bridged token
-            const address = getAddress(bridgeInfo.tokenAddress, chainId);
-            if (!this.#tokensByAddress.has(address)) {
-              this.#tokensByAddress.set(address, tokenMetadata);
+            const key = getChainAddressKey({
+              chainId,
+              address: bridgeInfo.tokenAddress,
+            });
+            if (!this.#tokensByAddress.has(key)) {
+              this.#tokensByAddress.set(key, tokenMetadata);
             }
 
             this.addTokenLogoImageSources(
@@ -140,13 +133,13 @@ export class TokenMetadataStore {
     chainAddress: ChainAddress,
     ...newSources: ReadonlyArray<string>
   ): TokenMetadata {
-    const address = getAddress(chainAddress.address, chainAddress.chainId);
+    const key = getChainAddressKey(chainAddress);
     let tokenMetadata = this.#tokensByAddress.get(
-      address,
+      key,
     );
     if (!tokenMetadata) {
       tokenMetadata = { logoImages: [] };
-      this.#tokensByAddress.set(address, tokenMetadata);
+      this.#tokensByAddress.set(key, tokenMetadata);
     }
 
     const newLogoImages = tokenMetadata.logoImages.slice();
@@ -167,7 +160,7 @@ export class TokenMetadataStore {
    */
   getTokenFromAddress(chainAddress: ChainAddress): TokenMetadata | null {
     return this.#tokensByAddress.get(
-      getAddress(chainAddress.address, chainAddress.chainId),
+      getChainAddressKey(chainAddress),
     ) ?? null;
   }
 

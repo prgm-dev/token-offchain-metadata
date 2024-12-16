@@ -1,7 +1,7 @@
 {
   "name": "@prgm/token-offchain-metadata",
   "license": "Apache-2.0",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "exports": {
     ".": "./mod.ts",
     "./defaults": "./defaults.ts"
@@ -13,7 +13,7 @@
     "dev": "deno run --allow-net=ipfs.io:443,tokens.coingecko.com:443 --watch main.ts"
   },
   "imports": {
-    "@valibot/valibot": "jsr:@valibot/valibot@^0.42.1",
-    "@wevm/viem": "jsr:@wevm/viem@^2.21.55"
+    "@std/cache": "jsr:@std/cache@^0.1.3",
+    "@valibot/valibot": "jsr:@valibot/valibot@^0.42.1"
   }
 }

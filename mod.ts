@@ -55,8 +55,8 @@
  * @module
  */
 
+export type { Address, ChainAddress } from "./chain-address.ts";
 export {
-  type ChainAddress,
   type TokenListMetadata,
   type TokenMetadata,
   TokenMetadataStore,

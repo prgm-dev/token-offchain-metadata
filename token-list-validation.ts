@@ -1,10 +1,9 @@
 import * as v from "@valibot/valibot";
-import { isAddress } from "@wevm/viem/utils";
-import type { Address } from "@wevm/viem";
+import { type Address, isAddress } from "./chain-address.ts";
 
-/** A Valibot schema that validates an Address using viem's {@link isAddress}. */
+/** A Valibot schema that validates an EVM Address. */
 export const addressSchema: v.CustomSchema<Address, undefined> = v.custom(
-  (s) => typeof s === "string" && isAddress(s, { strict: false }),
+  (s) => typeof s === "string" && isAddress(s),
 );
 
 const tokenInfoSchema = v.object({

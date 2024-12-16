@@ -34,6 +34,9 @@
  * });
  * ```
  *
+ * This will return a {@link TokenMetadata} object that will contain some chain-agnostic
+ * metadata for the token.
+ *
  * ### Manually adding token image sources
  *
  * If you have image sources for a token that are not included in the token list,

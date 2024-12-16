@@ -11,4 +11,4 @@ export const defaultTokenLists = [
 ] as const;
 
 /** Default IPFS gateway provider */
-export const defaultIpfsProvider = "https://ipfs.io/";
+export const defaultIpfsProvider = "https://ipfs.io";

@@ -1,10 +1,13 @@
 {
   "name": "@prgm/token-offchain-metadata",
   "license": "Apache-2.0",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "exports": {
     ".": "./mod.ts",
     "./defaults": "./defaults.ts"
+  },
+  "publish": {
+    "exclude": ["docs/", ".vscode/"]
   },
   "tasks": {
     "dev": "deno run --allow-net=ipfs.io:443,tokens.coingecko.com:443 --watch main.ts"

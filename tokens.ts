@@ -65,7 +65,7 @@ export class TokenMetadataStore {
    * @see The {@link https://tokenlists.org/ | Token Lists website} for more information on token lists.
    */
   async fetchTokensFromList(
-    tokenListUrl: URL,
+    tokenListUrl: URL | string,
     options?: { fetch?: typeof fetch },
   ): Promise<void> {
     const response = await (options?.fetch ?? fetch)(tokenListUrl);
@@ -114,11 +114,12 @@ export class TokenMetadataStore {
     }
 
     // On success, store the token list
-    this.#tokenLists.set(tokenListUrl.href, {
+    const href = tokenListUrl instanceof URL ? tokenListUrl.href : tokenListUrl;
+    this.#tokenLists.set(href, {
       name: parseResult.output.name,
       timestamp: parseResult.output.timestamp,
       version: parseResult.output.version,
-      href: tokenListUrl.href,
+      href,
     });
   }
 
@@ -175,9 +176,9 @@ export class TokenMetadataStore {
    * From a given URL or href, return the token list metadata if it was loaded.
    */
   getTokenListMetadata(tokenListUrl: URL | string): TokenListMetadata | null {
-    if (typeof tokenListUrl === "string") {
-      tokenListUrl = new URL(tokenListUrl);
+    if (typeof tokenListUrl !== "string") {
+      tokenListUrl = tokenListUrl.href;
     }
-    return this.#tokenLists.get(tokenListUrl.href) ?? null;
+    return this.#tokenLists.get(tokenListUrl) ?? null;
   }
 }

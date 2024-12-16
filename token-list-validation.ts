@@ -4,7 +4,7 @@ import type { Address } from "@wevm/viem";
 
 /** A Valibot schema that validates an Address using viem's {@link isAddress}. */
 export const addressSchema: v.CustomSchema<Address, undefined> = v.custom(
-  (s) => typeof s === "string" && isAddress(s, { strict: false })
+  (s) => typeof s === "string" && isAddress(s, { strict: false }),
 );
 
 const tokenInfoSchema = v.object({
@@ -30,12 +30,12 @@ const tokenInfoSchema = v.object({
             v.decimal(),
             v.transform(Number),
             v.safeInteger(),
-            v.minValue(1)
+            v.minValue(1),
           ),
-          v.object({ tokenAddress: addressSchema })
-        )
+          v.object({ tokenAddress: addressSchema }),
+        ),
       ),
-    })
+    }),
   ),
 });
 

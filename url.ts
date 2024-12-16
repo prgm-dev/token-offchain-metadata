@@ -19,14 +19,14 @@ export type Web3URL = HttpsUrlString | IpfsUrlString | IpnsUrlString;
 
 function buildIpfsHttpsUrl(
   cid: string,
-  ipfsProvider?: HttpsUrlString
+  ipfsProvider?: HttpsUrlString,
 ): `https://${string}/ipfs/${string}` {
   return `${ipfsProvider ?? defaultIpfsProvider}/ipfs/${cid}`;
 }
 
 function buildIpnsHttpUrl(
   cid: string,
-  ipfsProvider?: HttpsUrlString
+  ipfsProvider?: HttpsUrlString,
 ): `https://${string}/ipns/${string}` {
   return `${ipfsProvider ?? defaultIpfsProvider}/ipns/${cid}`;
 }
@@ -40,7 +40,7 @@ function buildIpnsHttpUrl(
  */
 export function toHttpsUrl(
   href: Web3URL,
-  ipfsProvider: HttpsUrlString = defaultIpfsProvider
+  ipfsProvider: HttpsUrlString = defaultIpfsProvider,
 ): URL {
   const url = new URL(href);
   switch (url.protocol) {
@@ -49,12 +49,12 @@ export function toHttpsUrl(
     case "ipfs:":
       return new URL(
         `${url.pathname}${url.search}${url.hash}`,
-        buildIpfsHttpsUrl(url.hostname, ipfsProvider)
+        buildIpfsHttpsUrl(url.hostname, ipfsProvider),
       );
     case "ipns:":
       return new URL(
         `${url.pathname}${url.search}${url.hash}`,
-        buildIpnsHttpUrl(url.hostname, ipfsProvider)
+        buildIpnsHttpUrl(url.hostname, ipfsProvider),
       );
     default:
       throw new Error(`Unsupported URL protocol: ${url.protocol}`);

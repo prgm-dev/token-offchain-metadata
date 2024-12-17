@@ -11,6 +11,7 @@
   },
   "deno.enable": true,
   "cSpell.words": [
+    "denoland",
     "ipfs",
     "ipns",
     "offchain",

@@ -7,7 +7,11 @@
     "./defaults": "./defaults.ts"
   },
   "publish": {
-    "exclude": ["docs/", ".vscode/"]
+    "exclude": [
+      // NOTE: Gitignored files are already excluded
+      // Ignore all hidden directories at the root of the project
+      ".*/"
+    ]
   },
   "tasks": {
     "dev": "deno run --allow-net=ipfs.io:443,tokens.coingecko.com:443 --watch main.ts"
